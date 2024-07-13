@@ -1,7 +1,7 @@
 import establishConnection from "config/mongodb";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
-import Events from  "components/events"
+import Events from  "components/events/index"
 
 type ConnectionStatus = {
   isConnected: boolean;
