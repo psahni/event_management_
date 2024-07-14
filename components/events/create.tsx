@@ -4,16 +4,17 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Event } from "types/event"
-import { DateDiffInDays } from  "helpers/utility"
+import { DateDiff } from  "helpers/utility"
+import eventService  from "services/event.service"
 
 export default function Create(props: { event: Event }) {
   const router = useRouter();
   const event = props?.event;
 
   const validationSchema = Yup.object().shape({
-    eventName: Yup.string()
+    name: Yup.string()
         .required('Event Name is required'),
-    eventDescription: Yup.string()
+    description: Yup.string()
         .required('Event Description is required'),
     startdatetime: Yup.date()
         .required('Start Date Time is required')
@@ -21,12 +22,22 @@ export default function Create(props: { event: Event }) {
         .test("should be greater", "Start Date Time must be after 3 days", (value) => {
           const today = new Date()
           const selectedDate = new Date(value)
-          const daysDiff = DateDiffInDays(today, selectedDate)
-          return daysDiff >= 3
+          const { diffDays } = DateDiff(today, selectedDate)
+          return diffDays >= 3
         }),
     enddatetime: Yup.date()
         .required('End Date Time is required')
         .typeError("Invalid Date")
+        .test("should be greater", "Difference between start date time and end date time must be atleast 2 hours", (value, ctx) => {
+          const startdatetime = new Date(ctx.parent.startdatetime)
+          if (startdatetime.toString() == "Invalid Date") return ctx.createError({ message: "Invlid start date time"})
+
+          const selectedDate = new Date(value)
+          if (selectedDate < startdatetime) return ctx.createError({ message: "end date time must be greater than start date time"})
+
+          const { diffHours } = DateDiff(startdatetime, selectedDate)
+          return diffHours >= 2
+        }),
   });
 
 
@@ -34,27 +45,27 @@ export default function Create(props: { event: Event }) {
   const { handleSubmit, register, formState } = useForm(formOptions);
   const { errors } = formState;
 
-  async function onSubmit(data: any) {
-    console.log("data = ", data)
-    alert("Hello")
+  async function onSubmit(event : Event) {
+    const newEvent = eventService.createEvent(event)
+    console.log(newEvent)
   }
 
   return (
     <div>
       <h3>Create Event</h3>
-      <form onSubmit={handleSubmit((d) => console.log(d))}>
+      <form onSubmit={handleSubmit((data) => onSubmit(data))}>
         <div className="row">
           <label className="label">Event Name</label>
           <div className="col">
-            <input type="text" {...register('eventName')}  className={`form-control`}></input>
-            <span className="invalid-feedback">{errors.eventName?.message}</span>
+            <input type="text" {...register('name')}  className={`form-control`}></input>
+            <span className="invalid-feedback">{errors.name?.message}</span>
           </div>
         </div>
         <div className="row">
           <label className="label">Event Description</label>
           <div className="col">
-            <textarea {...register('eventDescription')} rows={10} className={`form-control`}></textarea>
-            <span className="invalid-feedback">{errors.eventDescription?.message}</span>
+            <textarea {...register('description')} rows={10} className={`form-control`}></textarea>
+            <span className="invalid-feedback">{errors.description?.message}</span>
           </div>
         </div>
         <div className="row">
