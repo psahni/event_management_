@@ -33,9 +33,14 @@ export default function Home({
       <main>
         {isConnected ? (
           <div>
-          <h2 className="subtitle">Event Management</h2>
-          <h5>Displaying Events</h5>
-          <Events></Events>
+            <h2 className="subtitle">Event Management</h2>
+            <div className="flex jcsb">
+              <strong>Displaying Events</strong>
+              <a className='' href={'/events/new'}>Create Event</a>
+            </div>
+            <div className="mt-10">
+              <Events/>
+            </div>
           </div>
         ) : (
           <h2 className="subtitle">
@@ -45,10 +50,17 @@ export default function Home({
 
       </main>
 
-      <footer>
-      </footer>
-
+      <footer/>
       <style jsx>{`
+        .flex {
+          display: flex;
+        }
+        .jcsb {
+          justify-content: space-between;
+         }
+         .mt-10 {
+            margin-top: 10px;
+         }
         .container {
           padding: 1rem;
         }
