@@ -1,9 +1,17 @@
 
 import { Event } from "types/event"
 
-function createEvent(event: Event) {
+async function createEvent(event: Event) {
     console.log("==> createEvent")
-    return {...event, ...{ id: 1}}
+    const data = await fetch('/api/events', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(event)
+    })
+
+    const newEvent = await data.json();
+
+    return newEvent
 }
 
 const eventService = {

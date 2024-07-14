@@ -16,7 +16,7 @@ export default function Create(props: { event: Event }) {
         .required('Event Name is required'),
     description: Yup.string()
         .required('Event Description is required'),
-    startdatetime: Yup.date()
+    startDateTime: Yup.date()
         .required('Start Date Time is required')
         .typeError("Invalid Date")
         .test("should be greater", "Start Date Time must be after 3 days", (value) => {
@@ -25,12 +25,12 @@ export default function Create(props: { event: Event }) {
           const { diffDays } = DateDiff(today, selectedDate)
           return diffDays >= 3
         }),
-    enddatetime: Yup.date()
+    endDateTime: Yup.date()
         .required('End Date Time is required')
         .typeError("Invalid Date")
         .test("should be greater", "Difference between start date time and end date time must be atleast 2 hours", (value, ctx) => {
-          const startdatetime = new Date(ctx.parent.startdatetime)
-          if (startdatetime.toString() == "Invalid Date") return ctx.createError({ message: "Invlid start date time"})
+          const startdatetime = new Date(ctx.parent.startDateTime)
+          if (startdatetime.toString() == "Invalid Date") return ctx.createError({ message: "Invalid start date time"})
 
           const selectedDate = new Date(value)
           if (selectedDate < startdatetime) return ctx.createError({ message: "end date time must be greater than start date time"})
@@ -46,8 +46,10 @@ export default function Create(props: { event: Event }) {
   const { errors } = formState;
 
   async function onSubmit(event : Event) {
-    const newEvent = eventService.createEvent(event)
-    console.log(newEvent)
+    const newEvent = await eventService.createEvent(event)
+    if (newEvent._id) {
+      router.push('/');
+    } 
   }
 
   return (
@@ -75,10 +77,10 @@ export default function Create(props: { event: Event }) {
               type="datetime-local" 
               id="startdatetime" 
               className={`form-control`}
-              {...register('startdatetime')}
+              {...register('startDateTime')}
             >
             </input>
-            <span className="invalid-feedback">{errors.startdatetime?.message}</span>
+            <span className="invalid-feedback">{errors.startDateTime?.message}</span>
           </div>
         </div>
         <div className="row">
@@ -88,10 +90,10 @@ export default function Create(props: { event: Event }) {
               type="datetime-local" 
               id="enddatetime" 
               className={`form-control`} 
-              {...register('enddatetime')}
+              {...register('endDateTime')}
             >
             </input>
-            <span className="invalid-feedback">{errors.enddatetime?.message}</span>
+            <span className="invalid-feedback">{errors.endDateTime?.message}</span>
           </div>
         </div>
         <div className="row">

@@ -17,11 +17,9 @@ async function FindAll(req: NextApiRequest, res: NextApiResponse) {
 
 
 async function createEvent(req: NextApiRequest, res: NextApiResponse) {
-  const {name, startDateTime, endDateTime } = req.body
-  const newevent = new Event({name, startDateTime, endDateTime })
-  newevent.name = name
-  newevent.startDateTime = startDateTime
-  newevent.endDateTime = endDateTime
+  console.log("ss", req.body)
+  const {name, description, startDateTime, endDateTime } = req.body
+  const newevent = new Event({name, description, startDateTime, endDateTime })
   try {
     const saved = await newevent.save()
     res.status(200).json(saved)
