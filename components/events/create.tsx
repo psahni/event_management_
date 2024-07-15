@@ -20,10 +20,18 @@ export default function Create(props?: { event?: Event }) {
     startDateTime: Yup.date()
         .required('Start Date Time is required')
         .typeError("Invalid Date")
-        .test("should be greater", "Start Date Time must be after 3 days", (value) => {
-          const today = new Date()
-          const selectedDate = new Date(value)
-          const { diffDays } = DateDiff(today, selectedDate)
+        .test("should be greater", "Start Date Time must be after 3 days", (value, ctx) => {
+          const ev = ctx.parent
+          let startdate = new Date()
+          let selectedDate = new Date(value)
+    
+          if (ev._id) {
+            startdate = new Date(ev.createdAt)
+            selectedDate = formOptions.defaultValues.startDateTime
+          }
+    
+          const { diffDays } = DateDiff(startdate, selectedDate)
+        
           return diffDays >= 3
         }),
     endDateTime: Yup.date()
@@ -50,8 +58,10 @@ export default function Create(props?: { event?: Event }) {
   const { handleSubmit, register, formState } = useForm(formOptions);
   const { errors } = formState;
 
-  async function handleChange(ev: any) {
-    if (!ev.target['validity'].valid) return;
+  async function handleChange(dateFieldName: 'startDateTime' | 'endDateTime', e: any) {
+    if (!e.target['validity'].valid) return;
+
+    formOptions.defaultValues[dateFieldName] = e.target.value
   }
 
   async function onSubmit(ev : Event) {
@@ -62,6 +72,7 @@ export default function Create(props?: { event?: Event }) {
       savedEvent = await eventService.createEvent(ev)
     }
   
+    console.log(savedEvent, "event")
     if (savedEvent._id) {
       router.push('/');
     } 
@@ -92,8 +103,8 @@ export default function Create(props?: { event?: Event }) {
               type="datetime-local" 
               id="startdatetime" 
               className={`form-control`}
-              value={getDateString(formOptions.defaultValues.startDateTime)}
-              onChange={handleChange}
+              defaultValue={getDateString(formOptions.defaultValues.startDateTime)}
+              onChange={(e) => handleChange('startDateTime', e)}
             >
             </input>
             <span className="invalid-feedback">{errors.startDateTime?.message}</span>
@@ -106,8 +117,8 @@ export default function Create(props?: { event?: Event }) {
               type="datetime-local" 
               id="enddatetime" 
               className={`form-control`}
-              value={getDateString(formOptions.defaultValues.endDateTime)}
-              onChange={handleChange}
+              defaultValue={getDateString(formOptions.defaultValues.endDateTime)}
+              onChange={(e) => handleChange('startDateTime', e)}
             >
             </input>
             <span className="invalid-feedback">{errors.endDateTime?.message}</span>

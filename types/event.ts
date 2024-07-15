@@ -4,6 +4,8 @@ export interface Event {
   description: string
   startDateTime: Date
   endDateTime: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export interface EventFormValues {

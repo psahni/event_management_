@@ -20,8 +20,9 @@ async function updateEvent(event: Event, id: string) {
   })
 
   const updatedEvent = await data.json();
+  if (updatedEvent._id) return event
 
-  return updatedEvent
+  return { _id: null }
 }
 
 async function findEvent(id: string) {

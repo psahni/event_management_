@@ -13,14 +13,16 @@ async function findById(req: NextApiRequest, res: NextApiResponse) {
 
 async function updateEvent(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
-  let event = await Event.findById(id)
-  event = Object.assign(event, req.body)
+  delete req.body._id
 
-  const saved = await Event.updateOne(event)
-
-  if (!saved.acknowledged) return res.status(500);
-
-  return res.status(200).json(event)
+  const event = await Event.findOne({_id: id })
+  if (event) {
+    const saved = await Event.updateOne({_id: id}, req.body)    
+    if (!saved.acknowledged) return res.status(500);
+    return res.status(200).json(event)
+  }
+  
+  return res.status(401)
 }
 
 export default apiHandler({
