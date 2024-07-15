@@ -66,8 +66,6 @@ export default function Create(props?: { event?: Event }) {
   async function onSubmit(data : Event) {
     const {startDateTime, endDateTime } = formOptions.defaultValues
     Object.assign(data, {startDateTime, endDateTime})
-
-    debugger
     let savedEvent;
     if (event && event._id) {
       savedEvent = await eventService.updateEvent(data, event._id)
@@ -75,7 +73,6 @@ export default function Create(props?: { event?: Event }) {
       savedEvent = await eventService.createEvent(data)
     }
   
-    console.log(savedEvent, "event")
     if (savedEvent._id) {
       router.push('/');
     } 

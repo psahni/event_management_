@@ -91,6 +91,9 @@ export default function Home({
           max-width: 22rem;
         }
         .event-actions {
+          a {
+            margin-right: 10px;
+          }
         }
 
         * {

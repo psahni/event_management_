@@ -25,6 +25,17 @@ async function updateEvent(event: Event, id: string) {
   return { _id: null }
 }
 
+async function deleteEvent(id: string) {
+  const data = await fetch(`/api/events/${id}`, {
+    method: 'DELETE',
+    headers: {'Content-Type': 'application/json'}
+  })
+
+  const deletedData = data.json()
+
+  return deletedData
+}
+
 async function findEvent(id: string) {
   const data = await fetch(`/api/events/${id}`)
   const event = await data.json();
@@ -35,6 +46,7 @@ async function findEvent(id: string) {
 const eventService = {
   createEvent,
   updateEvent,
+  deleteEvent,
   findEvent,
 }
 

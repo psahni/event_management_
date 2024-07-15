@@ -25,7 +25,17 @@ async function updateEvent(req: NextApiRequest, res: NextApiResponse) {
   return res.status(401)
 }
 
+async function deleteEvent(req: NextApiRequest, res: NextApiResponse) {
+  const { id } = req.query
+
+  const data = await Event.deleteOne({_id: id })
+  console.log(data)
+
+  return res.status(200)
+}
+
 export default apiHandler({
   get: findById,
-  put: updateEvent
+  put: updateEvent,
+  delete: deleteEvent
 })
