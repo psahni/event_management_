@@ -28,7 +28,7 @@ export default function Events() {
   }
 
   function publishEvent(event: Event) {
-
+    eventService.publishEvent(event)
   }
 
 
@@ -37,11 +37,15 @@ export default function Events() {
       { 
         events && events.map(
           (ev: Event) => <div key={ev._id} className='flex events-list'>
-            <div>{ev.name}</div>
+            <div className={ev.publish ? 'col-green': ''}>{ev.name}</div>
             <div className='event-actions'>
               <Link href={`/events/${ev._id}/edit`}>Edit</Link>
               <Link href={''} onClick={() => deleteEvent(ev)}>Delete</Link>
-              <Link href={''} onClick={() => publishEvent(ev)}>Publish</Link>
+              {
+                !ev.publish ?
+                <Link href={''} onClick={() => publishEvent(ev)}>Publish</Link>
+                : ''
+              }
             </div>
           </div>
         )

@@ -4,6 +4,7 @@ export interface Event {
   description: string
   startDateTime: Date
   endDateTime: Date
+  publish?: boolean
   createdAt?: Date
   updatedAt?: Date
 }

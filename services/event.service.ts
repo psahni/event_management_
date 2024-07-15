@@ -12,11 +12,24 @@ async function createEvent(event: Event) {
     return newEvent
 }
 
-async function updateEvent(event: Event, id: string) {
-  const data = await fetch(`/api/events/${id}`, {
+async function updateEvent(event: Event) {
+  const data = await fetch(`/api/events/${event._id}`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(event)
+  })
+
+  const updatedEvent = await data.json();
+  if (updatedEvent._id) return event
+
+  return { _id: null }
+}
+
+async function publishEvent(event: Event) {
+  console.log("service publishEvent ")
+  const data = await fetch(`/api/events/${event._id}`, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'}
   })
 
   const updatedEvent = await data.json();
@@ -31,7 +44,7 @@ async function deleteEvent(id: string) {
     headers: {'Content-Type': 'application/json'}
   })
 
-  const deletedData = data.json()
+  const deletedData = await data.json()
 
   return deletedData
 }
@@ -47,6 +60,7 @@ const eventService = {
   createEvent,
   updateEvent,
   deleteEvent,
+  publishEvent,
   findEvent,
 }
 

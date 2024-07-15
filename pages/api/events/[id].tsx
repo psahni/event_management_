@@ -28,14 +28,22 @@ async function updateEvent(req: NextApiRequest, res: NextApiResponse) {
 async function deleteEvent(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
 
-  const data = await Event.deleteOne({_id: id })
-  console.log(data)
+  await Event.deleteOne({_id: id })
 
-  return res.status(200)
+  return res.status(200).json({message: "Deleted Successfully"})
+}
+
+async function publishEvent(req: NextApiRequest, res: NextApiResponse) {
+  const { id } = req.query
+
+  await Event.updateOne({_id: id}, {publish: true})
+
+  return res.status(200).json({message: "Pubslished"})
 }
 
 export default apiHandler({
   get: findById,
   put: updateEvent,
+  patch: publishEvent,
   delete: deleteEvent
 })

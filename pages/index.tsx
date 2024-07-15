@@ -85,12 +85,15 @@ export default function Home({
          .mt-10 {
             margin-top: 10px;
          }
-
+         .col-green {
+            color: #07684D
+         }
         .events-list {
           justify-content: space-between;
-          max-width: 22rem;
+          max-width: 30rem;
         }
         .event-actions {
+          min-width: 10rem;
           a {
             margin-right: 10px;
           }
