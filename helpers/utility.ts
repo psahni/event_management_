@@ -19,11 +19,12 @@ export function getDateString(d: Date): string {
     d = new Date(d)
   }
 
-  let month, hours;
+  let month, hours, mins;
   month = d.getMonth() + 1 < 10 ? `0${d.getMonth()+1}` : `${d.getMonth()+1}`
   hours = d.getHours() < 10 ? `0${d.getHours()}` :  `${d.getHours()}`
+  mins  = d.getMinutes() < 10 ? `0${d.getMinutes()}` :  `${d.getMinutes()}`
 
-  const v = `${d.getFullYear()}-${month}-${d.getDate()}T${hours}:${d.getMinutes()}`
+  const v = `${d.getFullYear()}-${month}-${d.getDate()}T${hours}:${mins}`
 
   return v
 }

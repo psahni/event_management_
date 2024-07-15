@@ -20,14 +20,13 @@ export default function Create(props?: { event?: Event }) {
     startDateTime: Yup.date()
         .required('Start Date Time is required')
         .typeError("Invalid Date")
-        .test("should be greater", "Start Date Time must be after 3 days", (value, ctx) => {
+        .test("should be greater", "Start Date Time must be after 3 days", (_, ctx) => {
           const ev = ctx.parent
           let startdate = new Date()
-          let selectedDate = new Date(value)
+          let selectedDate = formOptions.defaultValues.startDateTime
     
           if (ev._id) {
             startdate = new Date(ev.createdAt)
-            selectedDate = formOptions.defaultValues.startDateTime
           }
     
           const { diffDays } = DateDiff(startdate, selectedDate)
@@ -37,11 +36,11 @@ export default function Create(props?: { event?: Event }) {
     endDateTime: Yup.date()
         .required('End Date Time is required')
         .typeError("Invalid Date")
-        .test("should be greater", "Difference between start date time and end date time must be atleast 2 hours", (value, ctx) => {
-          const startdatetime = new Date(ctx.parent.startDateTime)
+        .test("should be greater", "Difference between start date time and end date time must be atleast 2 hours", (_, ctx) => {
+          const startdatetime =  formOptions.defaultValues.startDateTime
           if (startdatetime.toString() == "Invalid Date") return ctx.createError({ message: "Invalid start date time"})
 
-          const selectedDate = new Date(value)
+          const selectedDate =  formOptions.defaultValues.endDateTime
           if (selectedDate < startdatetime) return ctx.createError({ message: "end date time must be greater than start date time"})
 
           const { diffHours } = DateDiff(startdatetime, selectedDate)
@@ -64,12 +63,16 @@ export default function Create(props?: { event?: Event }) {
     formOptions.defaultValues[dateFieldName] = e.target.value
   }
 
-  async function onSubmit(ev : Event) {
+  async function onSubmit(data : Event) {
+    const {startDateTime, endDateTime } = formOptions.defaultValues
+    Object.assign(data, {startDateTime, endDateTime})
+
+    debugger
     let savedEvent;
     if (event && event._id) {
-      savedEvent = await eventService.updateEvent(ev, event._id)
+      savedEvent = await eventService.updateEvent(data, event._id)
     } else {
-      savedEvent = await eventService.createEvent(ev)
+      savedEvent = await eventService.createEvent(data)
     }
   
     console.log(savedEvent, "event")
@@ -118,7 +121,7 @@ export default function Create(props?: { event?: Event }) {
               id="enddatetime" 
               className={`form-control`}
               defaultValue={getDateString(formOptions.defaultValues.endDateTime)}
-              onChange={(e) => handleChange('startDateTime', e)}
+              onChange={(e) => handleChange('endDateTime', e)}
             >
             </input>
             <span className="invalid-feedback">{errors.endDateTime?.message}</span>
