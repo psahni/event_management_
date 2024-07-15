@@ -4,10 +4,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Event } from "types/event"
-import { DateDiff } from  "helpers/utility"
+import { DateDiff, getDateString } from  "helpers/utility"
 import eventService  from "services/event.service"
 
-export default function Create(props: { event: Event }) {
+export default function Create(props?: { event?: Event }) {
+  
   const router = useRouter();
   const event = props?.event;
 
@@ -40,10 +41,18 @@ export default function Create(props: { event: Event }) {
         }),
   });
 
+  const formOptions = { 
+    resolver: yupResolver(validationSchema), 
+    defaultValues: event ? event : {name: '', description: '', startDateTime: new Date(), endDateTime: new Date()},
+    values: event
+  };
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
   const { handleSubmit, register, formState } = useForm(formOptions);
   const { errors } = formState;
+
+  async function handleChange(ev: any) {
+    if (!ev.target['validity'].valid) return;
+  }
 
   async function onSubmit(event : Event) {
     const newEvent = await eventService.createEvent(event)
@@ -77,7 +86,8 @@ export default function Create(props: { event: Event }) {
               type="datetime-local" 
               id="startdatetime" 
               className={`form-control`}
-              {...register('startDateTime')}
+              value={getDateString(formOptions.defaultValues.startDateTime)}
+              onChange={handleChange}
             >
             </input>
             <span className="invalid-feedback">{errors.startDateTime?.message}</span>
@@ -89,8 +99,9 @@ export default function Create(props: { event: Event }) {
             <input 
               type="datetime-local" 
               id="enddatetime" 
-              className={`form-control`} 
-              {...register('endDateTime')}
+              className={`form-control`}
+              value={getDateString(formOptions.defaultValues.endDateTime)}
+              onChange={handleChange}
             >
             </input>
             <span className="invalid-feedback">{errors.endDateTime?.message}</span>

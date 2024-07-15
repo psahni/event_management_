@@ -52,15 +52,6 @@ export default function Home({
 
       <footer/>
       <style jsx>{`
-        .flex {
-          display: flex;
-        }
-        .jcsb {
-          justify-content: space-between;
-         }
-         .mt-10 {
-            margin-top: 10px;
-         }
         .container {
           padding: 1rem;
         }
@@ -83,6 +74,23 @@ export default function Home({
             Droid Sans,
             Helvetica Neue,
             sans-serif;
+        }
+
+        .flex {
+          display: flex;
+        }
+        .jcsb {
+          justify-content: space-between;
+         }
+         .mt-10 {
+            margin-top: 10px;
+         }
+
+        .events-list {
+          justify-content: space-between;
+          max-width: 22rem;
+        }
+        .event-actions {
         }
 
         * {

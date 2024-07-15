@@ -14,8 +14,16 @@ async function createEvent(event: Event) {
     return newEvent
 }
 
+async function findEvent(id: string) {
+  const data = await fetch(`/api/events/${id}`)
+  const event = await data.json();
+
+  return event
+}
+
 const eventService = {
-  createEvent
+  createEvent,
+  findEvent
 }
 
 export default eventService

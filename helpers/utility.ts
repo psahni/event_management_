@@ -10,3 +10,20 @@ export function DateDiff(d1: Date, d2: Date) : { diffDays: number, diffHours: nu
   
   return { diffDays, diffHours }
 }
+
+
+export function getDateString(d: Date): string {
+  if (!d) return ''
+
+  if (typeof d == 'string') {
+    d = new Date(d)
+  }
+
+  let month, hours;
+  month = d.getMonth() + 1 < 10 ? `0${d.getMonth()+1}` : `${d.getMonth()+1}`
+  hours = d.getHours() < 10 ? `0${d.getHours()}` :  `${d.getHours()}`
+
+  const v = `${d.getFullYear()}-${month}-${d.getDate()}T${hours}:${d.getMinutes()}`
+
+  return v
+}
