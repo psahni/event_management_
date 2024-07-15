@@ -26,8 +26,8 @@ async function createEvent(req: NextApiRequest, res: NextApiResponse) {
     console.log(e)
     res.status(500).send(e);
   }
-  
 }
+
 
 const handler = apiHandler({
   get: FindAll,

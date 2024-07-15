@@ -54,9 +54,15 @@ export default function Create(props?: { event?: Event }) {
     if (!ev.target['validity'].valid) return;
   }
 
-  async function onSubmit(event : Event) {
-    const newEvent = await eventService.createEvent(event)
-    if (newEvent._id) {
+  async function onSubmit(ev : Event) {
+    let savedEvent;
+    if (event && event._id) {
+      savedEvent = await eventService.updateEvent(ev, event._id)
+    } else {
+      savedEvent = await eventService.createEvent(ev)
+    }
+  
+    if (savedEvent._id) {
       router.push('/');
     } 
   }
