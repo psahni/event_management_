@@ -68,7 +68,7 @@ export default function Create(props?: { event?: Event }) {
     Object.assign(data, {startDateTime, endDateTime})
     let savedEvent;
     if (event && event._id) {
-      savedEvent = await eventService.updateEvent(data, event._id)
+      savedEvent = await eventService.updateEvent(data)
     } else {
       savedEvent = await eventService.createEvent(data)
     }
