@@ -3,6 +3,7 @@ import { useAuth } from "provider/authProvider"
 import { ProtectedRoute } from "routes/ProtectedRoute"
 import Login from "pages/Login"
 import Logout from "pages/Logout"
+import SignUp from "pages/Signup"
 
 const Routes = () => {
   const { token } = useAuth()
@@ -28,6 +29,10 @@ const Routes = () => {
     {
       path: "/login",
       element: <Login />
+    },
+    {
+      path: "/signup",
+      element: <SignUp />
     }
   ];
 

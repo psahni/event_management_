@@ -9,7 +9,8 @@ export default defineConfig({
       components: "/src/components",
       pages: "/src/pages",
       provider: "/src/provider",
-      routes: "/src/routes"
+      routes: "/src/routes",
+      services: "/src/services",
     }
   }
 })
