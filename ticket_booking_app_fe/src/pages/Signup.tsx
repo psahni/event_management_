@@ -15,11 +15,16 @@ function SignUp() {
       .required('First Name is required'),
     lastName: Yup.string()
       .required('Last Name is required'),
-    username: Yup.string()
-      .required('Username is required'),
+    email: Yup.string()
+      .required('Email is required'),
     password: Yup.string()
       .required('Password is required')
-      .min(6, 'Password must be at least 6 characters')
+      .min(6, 'Password must be at least 6 characters'),
+    confirm_password: Yup.string().test("same as password", "Confirm password is not equal to password", (val: string, ctx: any) => {
+      const password = ctx.parent.password
+
+      return val === password
+    })
   });
   const formOptions = { resolver: yupResolver(validationSchema) };
 
@@ -33,7 +38,7 @@ function SignUp() {
 
   return (
     <Layout>
-      <div className="card">
+      <div className="card signup-form">
         <h4 className="card-header">Register</h4>
         <div className="card-body">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,14 +53,19 @@ function SignUp() {
               <div className="invalid-feedback">{errors.lastName?.message}</div>
             </div>
             <div className="mb-3">
-              <label className="form-label">Username</label>
-              <input type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-              <div className="invalid-feedback">{errors.username?.message}</div>
+              <label className="form-label">Email</label>
+              <input type="text" {...register('email')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
+              <div className="invalid-feedback">{errors.email?.message}</div>
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>
               <input type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
               <div className="invalid-feedback">{errors.password?.message}</div>
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Confirm Password</label>
+              <input type="password" {...register('confirm_password')} className={`form-control ${errors.confirm_password ? 'is-invalid' : ''}`} />
+              <div className="invalid-feedback">{errors.confirm_password?.message}</div>
             </div>
             <button disabled={formState.isSubmitting} className="btn btn-primary">
               {formState.isSubmitting && <span className="spinner-border spinner-border-sm me-1"></span>}
