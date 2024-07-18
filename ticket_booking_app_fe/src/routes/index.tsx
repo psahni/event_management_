@@ -3,9 +3,10 @@ import { useAuth } from "provider/authProvider"
 import { ProtectedRoute } from "routes/ProtectedRoute"
 import Login from "pages/Login"
 import Logout from "pages/Logout"
-import SignUp from "pages/Signup"
+import  Signup from "pages/Signup"
+import Home from "pages/Home"
 
-const Routes = () => {
+let Routes = () => {
   const { token } = useAuth()
   console.log("Routes: token", token)
 
@@ -24,7 +25,7 @@ const Routes = () => {
   const publicRoutes = [
     {
       path: "/",
-      element: <div>Home Page</div>
+      element: <Home/>
     },
     {
       path: "/login",
@@ -32,7 +33,7 @@ const Routes = () => {
     },
     {
       path: "/signup",
-      element: <SignUp />
+      element: <Signup />
     }
   ];
 

@@ -4,12 +4,14 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup";
 import { useForm } from 'react-hook-form';
 import Layout from "components/authentication/Layout";
+import authService from "services/auth_service"
+import { HttpStatusCode } from "axios";
+import { toast } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
 
 
-function SignUp() {
+export default function Signup() {
   const navigate = useNavigate();
-
-  // form validation rules 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
       .required('First Name is required'),
@@ -26,18 +28,23 @@ function SignUp() {
       return val === password
     })
   });
-  const formOptions = { resolver: yupResolver(validationSchema) };
 
-  // get functions to build form with useForm() hook
+  const formOptions = { resolver: yupResolver(validationSchema) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
 
-  function onSubmit(user) {
+  async function onSubmit(user: { email: string, firstName: string, lastName: string, password: string}) {
+    const { status } = await authService.SignUp(user);
 
+    if (status == HttpStatusCode.Ok) {
+      toast.success("Successfull signup, please login", { autoClose: 3000 });
+      navigate("/", { replace: true })
+    }
   }
 
   return (
     <Layout>
+      <ToastContainer />
       <div className="card signup-form">
         <h4 className="card-header">Register</h4>
         <div className="card-body">
@@ -78,4 +85,3 @@ function SignUp() {
     </Layout>)
 }
 
-export default SignUp;
