@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import { apiHandler } from "helpers/api_handler"
 import User from "models/user"
 
