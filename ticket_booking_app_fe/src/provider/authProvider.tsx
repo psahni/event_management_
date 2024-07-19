@@ -1,6 +1,4 @@
-import axios from "axios";
-
-import React, {
+import {
   createContext,
   useContext,
   useEffect,
@@ -9,30 +7,30 @@ import React, {
 } from "react";
 
 export const AuthContext = createContext({
-  token: '',
-  updateToken: (_: string) => {}
+  loggedIn: false,
+  updateLoginFlag: (_: boolean) => {}
 });
 
-const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token") || "")
+const AuthProvider = ({ children }: { children: JSX.Element}) => {
+  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("loggedIn")))
 
-  const updateToken = (newToken: string) => {
-    setToken(newToken)
+  const updateLoginFlag = (flag: boolean) => {
+    setLoggedIn(flag)
   }
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      localStorage.setItem("token", token);
+    if (loggedIn) {
+      // axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      localStorage.setItem("loggedIn", 'true');
     } else {
-      delete axios.defaults.headers.common["Authorization"];
-      localStorage.removeItem("token");
+      // delete axios.defaults.headers.common["Authorization"];
+      localStorage.removeItem("loggedIn");
     }
-  }, [token]);
+  }, [loggedIn]);
 
   const value = useMemo(
-    () => ({ token, updateToken }), 
-    [token]
+    () => ({ loggedIn, updateLoginFlag }), 
+    [loggedIn]
   );
   
   return (

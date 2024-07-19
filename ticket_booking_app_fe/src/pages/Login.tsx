@@ -4,11 +4,14 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup";
 import { useForm } from 'react-hook-form';
 import authService from "services/auth_service";
-// import { useAuth } from '../provider/authProvider';
+import { HttpStatusCode } from "axios";
+import { useAuth } from '../provider/authProvider';
+import { toast } from "react-toastify";
 // import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { updateLoginFlag } = useAuth()
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .required('Email is required'),
@@ -23,6 +26,13 @@ const Login = () => {
 
   async function onSubmit(data: {email: string, password: string}) {
     const res = await authService.Login(data)
+    if (res.status == HttpStatusCode.Ok) {
+      toast.success("Logged successfully", { autoClose: 3000 });
+      updateLoginFlag(true)
+      navigate('/events', { replace: true })
+    } else {
+      toast.error("Login failed, please try again", { autoClose: 3000 })
+    }
   }
 
   return(
@@ -40,7 +50,7 @@ const Login = () => {
               </div>
               <div className="mb-3">
                 <label className="form-label">Password</label>
-                <input type="text" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                <input type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                 <div className="invalid-feedback">{errors.password?.message}</div>
               </div>
               <button className="btn btn-primary">

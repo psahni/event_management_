@@ -1,7 +1,7 @@
 import axios, { HttpStatusCode } from "axios"
 import Login from '../pages/Login';
 
-const API_URL = "http://localhost:3000"
+const API_URL = "http://app.localhost:3000"
 
 export interface SignUpForm {
    email: string 
@@ -41,10 +41,10 @@ async function Login(user: LoginForm) {
     let response = await axios.post(`${API_URL}/api/user/login`, {
       email,
       password
-    })
+    }, { withCredentials: true })
 
-    if (response.status == HttpStatusCode.Accepted) {
-      return { status: HttpStatusCode.Accepted }
+    if (response.status == HttpStatusCode.Ok) {
+      return { status: HttpStatusCode.Ok }
     }
 
     return {

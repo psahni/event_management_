@@ -7,8 +7,8 @@ import  Signup from "@pages/Signup"
 import Home from "@pages/Home"
 
 let Routes = () => {
-  const { token } = useAuth()
-  console.log("Routes: token", token)
+  const { loggedIn } = useAuth()
+  console.log("Routes: loggedIn", loggedIn)
 
   const staticPagesRoutes = [
     {
@@ -47,8 +47,8 @@ let Routes = () => {
           element: <div>User Home Page</div>
         },
         {
-          path: "/profile",
-          element: <div>User profile</div>
+          path: "/events",
+          element: <div>Listing Events</div>
         },
         {
           path: "/logout",
@@ -62,7 +62,7 @@ let Routes = () => {
   // Combine and conditionally include routes based on authentication status
   const router = createBrowserRouter([
     ...staticPagesRoutes,
-    ...(!token ? publicRoutes : []),
+    ...(!loggedIn ? publicRoutes : []),
     ...protectedRoutes
   ])
 
