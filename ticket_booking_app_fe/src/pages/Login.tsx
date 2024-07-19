@@ -1,25 +1,57 @@
-// import { useNavigate } from "react-router-dom";
+import Layout from "components/authentication/Layout";
+import { useNavigate, Link } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as Yup from "yup";
+import { useForm } from 'react-hook-form';
+import authService from "services/auth_service";
 // import { useAuth } from '../provider/authProvider';
 // import { useEffect } from "react";
 
 const Login = () => {
-  // const { token, updateToken } = useAuth()
-  // console.log("token - ", token)
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .required('Email is required'),
+    password: Yup.string()
+      .required('Password is empty')
+  });
 
-  // const handleLogin = () => {
-  //   // updateToken("this is a test token")
-  //   // navigate("/", { replace: true })
-  //   return true;
-  // };
+  const formOptions = { resolver: yupResolver(validationSchema) };
+  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { errors } = formState;
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     handleLogin()
-  //   }, 3 * 1000)
-  // }, [])
 
-  return <>Login Page</>
+  async function onSubmit(data: {email: string, password: string}) {
+    const res = await authService.Login(data)
+  }
+
+  return(
+    <>
+      <Link to='/' >Home</Link>      
+      <Layout>
+        <div className="card">
+          <h4 className="card-header">Login Page</h4>
+          <div className="card-body">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                <div className="invalid-feedback">{errors.email?.message}</div>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input type="text" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                <div className="invalid-feedback">{errors.password?.message}</div>
+              </div>
+              <button className="btn btn-primary">
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      </Layout>
+    </>
+  )
 }
 
 export default Login

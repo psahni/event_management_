@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup";
@@ -7,7 +6,6 @@ import Layout from "components/authentication/Layout";
 import authService from "services/auth_service"
 import { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
-import { ToastContainer } from 'react-toastify';
 
 
 export default function Signup() {
@@ -33,7 +31,12 @@ export default function Signup() {
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
 
-  async function onSubmit(user: { email: string, firstName: string, lastName: string, password: string}) {
+  async function onSubmit(user: { 
+    email: string, 
+    firstName: string, 
+    lastName: string, 
+    password: string
+  }) {
     const { status } = await authService.SignUp(user);
 
     if (status == HttpStatusCode.Ok) {
@@ -44,7 +47,6 @@ export default function Signup() {
 
   return (
     <Layout>
-      <ToastContainer />
       <div className="card signup-form">
         <h4 className="card-header">Register</h4>
         <div className="card-body">
