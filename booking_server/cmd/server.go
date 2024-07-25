@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"booking_server/db"
 	"booking_server/internal/config"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cobra"
 )
@@ -28,10 +29,6 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 		panic("Invalid configuration")
 	}
 	cfg := config.GetConfig()
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
 
 	gormDB, err := db.Connect()
 	if err == nil {
@@ -39,6 +36,8 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 	} else {
 		panic("can't connect to DB")
 	}
+
+	routes := config.ConfigureRoutes()
 
 	ctx := context.Background()
 
@@ -51,13 +50,39 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 
 	testRedis(ctx, client)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello booking server"))
-	})
+	fmt.Println("Starting server..")
+	ch := make(chan error, 1)
 
-	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), r)
-	return nil
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
+		Handler: routes,
+	}
+
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			ch <- fmt.Errorf("failed to start server: %w", err)
+		}
+		close(ch)
+	}()
+
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
+	// Listen for graceful shutdown
+	select {
+	case err := <-ch:
+		return err
+	case <-ctx.Done():
+		fmt.Println("Graceful shutdown..")
+		timeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+
+		return server.Shutdown(timeout)
+	}
 }
+
+//-----------------------------------------------------------------------------------------
 
 func testRedis(ctx context.Context, client *redis.Client) {
 	err := client.Set(ctx, "foo", "bar", 0).Err()
