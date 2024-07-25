@@ -4,9 +4,11 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Booking struct {
+	gorm.Model
 	ID           uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
 	EventID      uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
 	UserId       uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
