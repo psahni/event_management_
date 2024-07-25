@@ -19,6 +19,14 @@ const eventSchema = new Schema(
       type: Date,
       required: true,
     },
+    venue: {
+      type: String,
+      required: true
+    },
+    ticketsAvailable: {
+      type: Number,
+      required: true
+    },
     publish: {
       type: Boolean,
       default: false

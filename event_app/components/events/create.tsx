@@ -17,6 +17,10 @@ export default function Create(props?: { event?: Event }) {
       .required('Event Name is required'),
     description: Yup.string()
       .required('Event Description is required'),
+    venue: Yup.string()
+      .required('Venue is required'),
+    ticketsAvailable: Yup.string()
+      .required("How many tickets(slots) are available ?"),
     startDateTime: Yup.date()
       .required('Start Date Time is required')
       .typeError("Invalid Date")
@@ -94,6 +98,20 @@ export default function Create(props?: { event?: Event }) {
           <div className="col">
             <textarea {...register('description')} rows={10} className={`form-control`}></textarea>
             <span className="invalid-feedback">{errors.description?.message}</span>
+          </div>
+        </div>
+        <div className="row">
+          <label className="label">Venue</label>
+          <div className="col">
+            <textarea {...register('venue')} rows={10} className={`form-control`}></textarea>
+            <span className="invalid-feedback">{errors.venue?.message}</span>
+          </div>
+        </div>
+        <div className="row">
+          <label className="label">Tickets Available</label>
+          <div className="col">
+            <textarea {...register('ticketsAvailable')} rows={10} className={`form-control`}></textarea>
+            <span className="invalid-feedback">{errors.ticketsAvailable?.message}</span>
           </div>
         </div>
         <div className="row">
