@@ -10,15 +10,13 @@ interface EventParams {
 }
 
 async function FindAll(req: NextApiRequest, res: NextApiResponse) {
-  const events = await Event.find({})
+  const events = await Event.find({ publish: true, startDateTime: { $gte: new Date() } })
 
   res.status(200).json(events);
 }
 
 
 async function createEvent(req: NextApiRequest, res: NextApiResponse) {
-  console.log("-----")
-  console.log(req.body)
   const { name, description, venue, ticketsAvailable, startDateTime, endDateTime } = req.body
   const newevent = new Event({ name, description, venue, ticketsAvailable, startDateTime, endDateTime })
   try {
