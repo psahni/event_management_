@@ -20,7 +20,7 @@ func Run(gormDB *gorm.DB, direction Direction) error {
 	opt.ValidateUnknownMigrations = true
 
 	m := gormigrate.New(gormDB, opt, []*gormigrate.Migration{
-		initSchema20240531180603,
+		initbookingschema20240725123737,
 	})
 
 	if direction == DOWN {

@@ -34,3 +34,11 @@
 `
   $ docker run -p 3333:3333 --network booking_server_go_default go_lang_base_app:latest
 `
+
+### Notes
+* In order to generate the uuid, you need to enable the extention
+```
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+  select uuid_generate_v4();
+```

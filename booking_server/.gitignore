@@ -1,3 +1,4 @@
 config.yml
 go_lang_base_app
 tmp
+.air.toml

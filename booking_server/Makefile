@@ -6,6 +6,7 @@ __check_defined = \
       $(error Undefined $1$(if $2, ($2))))
 
 ## to generate a migration file
+## Eg: make migration NAME=initBookingSchema
 migration:
 	$(call check_defined, NAME)
 	./scripts/migration_gen.sh -f '$(NAME)'

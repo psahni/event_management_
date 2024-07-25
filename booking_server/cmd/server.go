@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/v5/middleware"
 	"booking_server/db"
 	"booking_server/internal/config"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +38,7 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world..."))
+		w.Write([]byte("hello booking server"))
 	})
 
 	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), r)
