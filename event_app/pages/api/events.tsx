@@ -6,7 +6,7 @@ interface EventParams {
   name: string,
   description?: string,
   startDateTime: Date,
-  startEndTime: Date, 
+  startEndTime: Date,
 }
 
 async function FindAll(req: NextApiRequest, res: NextApiResponse) {
@@ -17,12 +17,14 @@ async function FindAll(req: NextApiRequest, res: NextApiResponse) {
 
 
 async function createEvent(req: NextApiRequest, res: NextApiResponse) {
-  const {name, description, startDateTime, endDateTime } = req.body
-  const newevent = new Event({name, description, startDateTime, endDateTime })
+  console.log("-----")
+  console.log(req.body)
+  const { name, description, venue, ticketsAvailable, startDateTime, endDateTime } = req.body
+  const newevent = new Event({ name, description, venue, ticketsAvailable, startDateTime, endDateTime })
   try {
     const saved = await newevent.save()
     res.status(200).json(saved)
-  } catch(e)  {
+  } catch (e) {
     console.log(e)
     res.status(500).send(e);
   }
