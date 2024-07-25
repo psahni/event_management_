@@ -22,3 +22,6 @@ migrate.rollback:
 # to run the http server
 run:
 	go run main.go http_server
+
+air:
+	air http_server

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -9,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +24,7 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 	fmt.Println("==runHTTPServer()")
 	err := config.Read()
 	if err != nil {
+		fmt.Println(err)
 		panic("Invalid configuration")
 	}
 	cfg := config.GetConfig()
@@ -37,10 +40,37 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 		panic("can't connect to DB")
 	}
 
+	ctx := context.Background()
+
+	// Connect to redis server
+	client := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%v:%v", cfg.Redis.Host, cfg.Redis.Port),
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	})
+
+	testRedis(ctx, client)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello booking server"))
 	})
 
 	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), r)
 	return nil
+}
+
+func testRedis(ctx context.Context, client *redis.Client) {
+	err := client.Set(ctx, "foo", "bar", 0).Err()
+	if err != nil {
+		panic(err)
+	}
+
+	val, err := client.Get(ctx, "foo").Result()
+	if err != nil {
+		panic(err)
+	}
+
+	if val == "bar" {
+		fmt.Println("redis is working")
+	}
 }
