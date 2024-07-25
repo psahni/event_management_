@@ -1,0 +1,29 @@
+FROM golang:1.22-alpine
+
+LABEL maintainer="Developer"
+
+
+RUN apk add --update --no-cache curl git openssh-client make build-base
+
+
+WORKDIR /booking_server
+
+
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+RUN chmod +x /go/bin/dlv
+
+# RUN curl -L https://github.com/air-verse/air/releases/download/v1.52.2/air_1.52.2_linux_amd64.tar.gz | tar -xvz
+# RUN chmod +x air && cp ./air /bin/air
+
+RUN go install github.com/air-verse/air@latest
+
+COPY . .
+
+RUN  go mod download
+RUN  go mod tidy
+
+
+EXPOSE 3333
+EXPOSE 40000
+
+CMD ["air"]
