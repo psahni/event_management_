@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"booking_server/internal/config"
-	"booking_server/internal/lib/http"
+	"booking_server/internal/events"
+	httpLib "booking_server/internal/lib/http"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -37,9 +39,34 @@ func cacheEvents(_ *cobra.Command, _ []string) error {
 	}
 
 	ctx := context.Background()
-	httpClient := http.GetHttpClient()
+	httpClient := httpLib.GetHttpClient()
 	url := fmt.Sprintf("%v/%v", cfg.APIS.EventAppUrl, "api/events")
 
-	http.MakeRequest(ctx, httpClient, url, "GET")
+	var response []byte
+	response, err = httpLib.GetRequest(ctx, httpClient, url)
+	if err != nil {
+		fmt.Println("Error in fetching events ", err)
+	}
+	var events []events.Event
+	err = json.Unmarshal(response, &events)
+	if err != nil {
+		fmt.Println("Error in fetching events ", err)
+	}
+
+	client.Del(ctx, "eventsMap")
+
+	for _, event := range events {
+		err := client.HSet(ctx, "eventsMap", event.ID, event.TicketsAvailable).Err()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	val, err := client.HMGet(ctx, "eventsMap", "66a23cd5725cdab3e4c68049").Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("val", val[0])
+
 	return nil
 }
