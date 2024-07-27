@@ -16,6 +16,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(httpServerCommand)
 	rootCmd.AddCommand(migrateCmd)
+	rootCmd.AddCommand(cacheEventsCmd)
 }
 
 func Execute() {

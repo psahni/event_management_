@@ -5,6 +5,8 @@ __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $2, ($2))))
 
+cache_events:
+	go run main.go cache_events
 ## to generate a migration file
 ## Eg: make migration NAME=initBookingSchema
 migration:

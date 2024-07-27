@@ -24,7 +24,7 @@
   $ docker compose up
 `
 
-* If you use only DB
+* If you use only DB (Windows)
 `
   $ docker compose up postgres
 `
@@ -32,8 +32,11 @@
 * Start app server individually in the same network
 
 `
-  $ docker run -p 3333:3333 --network booking_server_go_default go_lang_base_app:latest
+  $ docker run -p 3333:3333 --network booking_server_default booking_server_app:latest
 `
+
+* Don't use docker container for starting app server on windows, it does not integrate well with air.
+Start the air directly - `air -- http_server`
 
 ### Notes
 * In order to generate the uuid, you need to enable the extention

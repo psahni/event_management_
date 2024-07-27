@@ -15,6 +15,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Database DatabaseConfig `mapstructure:"database"`
 	Redis    RedisConfig    `mapstructure:"redis"`
+	APIS     APIS           `mapstructure:"apis"`
 }
 
 type RedisConfig struct {
@@ -42,6 +43,12 @@ type DatabaseConfig struct {
 	MaxOpenConns          int           `mapstructure:"max_open_conns"`
 	MaxIdleConns          int           `mapstructure:"max_idle_conns"`
 }
+
+type APIS struct {
+	EventAppUrl string `mapstructure:"event_app"`
+}
+
+//----------------------------------------------------------------------------------------
 
 var cfg *Config
 
@@ -71,3 +78,5 @@ func GetConfig() *Config {
 
 	return cfg
 }
+
+//----------------------------------------------------------------------------------------
