@@ -2,6 +2,8 @@ export interface Event {
   _id?: string
   name: string
   description: string
+  venue: string
+  ticketsAvailable: number
   startDateTime: Date
   endDateTime: Date
   publish?: boolean
@@ -12,6 +14,8 @@ export interface Event {
 export interface EventFormValues {
   _id?: string
   name: string
+  venue: string
+  ticketsAvailable: number
   description: string
   startDateTime: string
   endDateTime: string

@@ -1,9 +1,9 @@
 import React from "react";
 import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldValues } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Event } from "types/event"
+import { Event, EventFormValues } from "types/event"
 import { DateDiff, getDateString } from "helpers/utility"
 import eventService from "services/event.service"
 
@@ -13,21 +13,17 @@ export default function Create(props?: { event?: Event }) {
   const event = props?.event;
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Event Name is required'),
-    description: Yup.string()
-      .required('Event Description is required'),
-    venue: Yup.string()
-      .required('Venue is required'),
-    ticketsAvailable: Yup.string()
-      .required("How many tickets(slots) are available ?"),
+    name: Yup.string().required('Event Name is required'),
+    description: Yup.string().required('Event Description is required'),
+    venue: Yup.string().required('Venue is required'),
+    ticketsAvailable: Yup.number().required("How many tickets(slots) are available ?"),
     startDateTime: Yup.date()
       .required('Start Date Time is required')
       .typeError("Invalid Date")
       .test("should be greater", "Start Date Time must be after 3 days", (_: any, ctx: any) => {
         const ev = ctx.parent
         let startdate = new Date()
-        let selectedDate = formOptions.defaultValues.startDateTime
+        let selectedDate = ev.startDateTime
 
         if (ev._id) {
           startdate = new Date(ev.createdAt)
@@ -41,10 +37,11 @@ export default function Create(props?: { event?: Event }) {
       .required('End Date Time is required')
       .typeError("Invalid Date")
       .test("should be greater", "Difference between start date time and end date time must be atleast 2 hours", (_: any, ctx: any) => {
-        const startdatetime = formOptions.defaultValues.startDateTime
+        const ev = ctx.parent
+        const startdatetime = ev.startDateTime;
         if (startdatetime.toString() == "Invalid Date") return ctx.createError({ message: "Invalid start date time" })
 
-        const selectedDate = formOptions.defaultValues.endDateTime
+        const selectedDate = ev.endDateTime;
         if (selectedDate < startdatetime) return ctx.createError({ message: "end date time must be greater than start date time" })
 
         const { diffHours } = DateDiff(startdatetime, selectedDate)
@@ -52,29 +49,29 @@ export default function Create(props?: { event?: Event }) {
       }),
   });
 
-  const formOptions = {
+
+  let formOptions: { resolver: Yup.AnyObject, defaultValues: EventFormValues, values?: EventFormValues }
+  formOptions = {
     resolver: yupResolver(validationSchema),
-    defaultValues: event ? event : { name: '', description: '', startDateTime: new Date(), endDateTime: new Date() },
-    values: event
+    defaultValues: { name: '', description: '', venue: '', ticketsAvailable: 1, startDateTime: getDateString(new Date()), endDateTime: getDateString(new Date()) }
   };
 
-  const { handleSubmit, register, formState } = useForm(formOptions);
-  const { errors } = formState;
-
-  async function handleChange(dateFieldName: 'startDateTime' | 'endDateTime', e: any) {
-    if (!e.target['validity'].valid) return;
-
-    formOptions.defaultValues[dateFieldName] = e.target.value
+  if (event?._id) {
+    const eventForm = Object.assign({}, event, { startDateTime: getDateString(event.startDateTime), endDateTime: getDateString(event.endDateTime) })
+    formOptions.values = eventForm
   }
 
-  async function onSubmit(data: Event) {
-    const { startDateTime, endDateTime } = formOptions.defaultValues
+  const { handleSubmit, register, formState } = useForm(formOptions as any);
+  const { errors } = formState;
+
+  async function onSubmit(data: FieldValues) {
+    const [startDateTime, endDateTime] = [new Date(data.startDateTime), new Date(data.endDateTime)]
     Object.assign(data, { startDateTime, endDateTime })
     let savedEvent;
     if (event && event._id) {
-      savedEvent = await eventService.updateEvent(data)
+      savedEvent = await eventService.updateEvent(data as Event)
     } else {
-      savedEvent = await eventService.createEvent(data)
+      savedEvent = await eventService.createEvent(data as Event)
     }
 
     if (savedEvent._id) {
@@ -103,14 +100,14 @@ export default function Create(props?: { event?: Event }) {
         <div className="row">
           <label className="label">Venue</label>
           <div className="col">
-            <textarea {...register('venue')} rows={10} className={`form-control`}></textarea>
+            <input type="text" {...register('venue')} className={`form-control`}></input>
             <span className="invalid-feedback">{errors.venue?.message}</span>
           </div>
         </div>
         <div className="row">
           <label className="label">Tickets Available</label>
           <div className="col">
-            <textarea {...register('ticketsAvailable')} rows={10} className={`form-control`}></textarea>
+            <input type="number" {...register('ticketsAvailable')} className={`form-control`}></input>
             <span className="invalid-feedback">{errors.ticketsAvailable?.message}</span>
           </div>
         </div>
@@ -121,8 +118,7 @@ export default function Create(props?: { event?: Event }) {
               type="datetime-local"
               id="startdatetime"
               className={`form-control`}
-              defaultValue={getDateString(formOptions.defaultValues.startDateTime)}
-              onChange={(e) => handleChange('startDateTime', e)}
+              {...register('startDateTime')}
             >
             </input>
             <span className="invalid-feedback">{errors.startDateTime?.message}</span>
@@ -134,9 +130,8 @@ export default function Create(props?: { event?: Event }) {
             <input
               type="datetime-local"
               id="enddatetime"
+              {...register('endDateTime')}
               className={`form-control`}
-              defaultValue={getDateString(formOptions.defaultValues.endDateTime)}
-              onChange={(e) => handleChange('endDateTime', e)}
             >
             </input>
             <span className="invalid-feedback">{errors.endDateTime?.message}</span>

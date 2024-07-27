@@ -12,33 +12,35 @@ async function findById(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function updateEvent(req: NextApiRequest, res: NextApiResponse) {
+  console.log("-----")
+  console.log(req.body)
   const { id } = req.query
   delete req.body._id
 
-  const event = await Event.findOne({_id: id })
+  const event = await Event.findOne({ _id: id })
   if (event) {
-    const saved = await Event.updateOne({_id: id}, req.body)    
+    const saved = await Event.updateOne({ _id: id }, req.body)
     if (!saved.acknowledged) return res.status(500);
     return res.status(200).json(event)
   }
-  
+
   return res.status(401)
 }
 
 async function deleteEvent(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
 
-  await Event.deleteOne({_id: id })
+  await Event.deleteOne({ _id: id })
 
-  return res.status(200).json({message: "Deleted Successfully"})
+  return res.status(200).json({ message: "Deleted Successfully" })
 }
 
 async function publishEvent(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query
 
-  await Event.updateOne({_id: id}, {publish: true})
+  await Event.updateOne({ _id: id }, { publish: true })
 
-  return res.status(200).json({message: "Pubslished"})
+  return res.status(200).json({ message: "Pubslished" })
 }
 
 export default apiHandler({
