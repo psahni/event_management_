@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"booking_server/cmd/tasks"
 	"fmt"
 	"os"
 
@@ -16,7 +17,8 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(httpServerCommand)
 	rootCmd.AddCommand(migrateCmd)
-	rootCmd.AddCommand(cacheEventsCmd)
+	// App Tasks
+	rootCmd.AddCommand(tasks.CacheEventsCmd)
 }
 
 func Execute() {

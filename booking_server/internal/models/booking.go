@@ -10,9 +10,9 @@ import (
 type Booking struct {
 	gorm.Model
 	ID           uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
-	EventID      uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
-	UserId       uuid.UUID `gorm:"not null;type:uuid;default:uuid_generate_v4()"`
-	TicketsCount int       `gorm:"type:integer;not null"`
+	EventID      string    `gorm:"not null;type:varchar(20);"`
+	UserId       string    `gorm:"not null;type:varchar(20);"`
+	TicketsCount int64     `gorm:"type:integer;not null;default:1"`
 	Status       string    `gorm:"type:varchar(20);not null"`
 	CreatedAt    time.Time `gorm:"not null;default:now()"`
 	UpdatedAt    time.Time `gorm:"not null;default:now()"`

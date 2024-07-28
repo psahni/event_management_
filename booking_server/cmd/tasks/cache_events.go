@@ -1,4 +1,4 @@
-package cmd
+package tasks
 
 import (
 	"booking_server/internal/config"
@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cacheEventsCmd = &cobra.Command{
+var CacheEventsCmd = &cobra.Command{
 	RunE:  cacheEvents,
 	Use:   "cache_events",
 	Short: "cache events from the events app server",
@@ -62,11 +62,12 @@ func cacheEvents(_ *cobra.Command, _ []string) error {
 		}
 	}
 
-	val, err := client.HMGet(ctx, "eventsMap", "66a23cd5725cdab3e4c68049").Result()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("val", val[0])
-
+	/*
+		val, err := client.HMGet(ctx, "eventsMap", "66a23cd5725cdab3e4c68049").Result()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("val", val[0])
+	*/
 	return nil
 }
