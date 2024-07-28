@@ -1,7 +1,5 @@
 import axios, { HttpStatusCode } from "axios"
-import Login from '../pages/Login';
-
-const API_URL = "http://app.localhost:3000"
+import { API_URL } from "constants"
 
 export interface SignUpForm {
    email: string 

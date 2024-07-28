@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup";
 import { useForm } from 'react-hook-form';
 import Layout from "components/authentication/Layout";
-import authService from "services/auth_service"
+import authService from "services/auth.service"
 import { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 

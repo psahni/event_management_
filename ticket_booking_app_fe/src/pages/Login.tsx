@@ -3,11 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup";
 import { useForm } from 'react-hook-form';
-import authService from "services/auth_service";
+import authService from "services/auth.service";
 import { HttpStatusCode } from "axios";
 import { useAuth } from '../provider/authProvider';
 import { toast } from "react-toastify";
-// import { useEffect } from "react";
+
 
 const Login = () => {
   const navigate = useNavigate();
