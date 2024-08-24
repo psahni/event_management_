@@ -26,13 +26,13 @@ func cacheEvents(_ *cobra.Command, _ []string) error {
 	}
 	cfg := config.GetConfig()
 
-	client := redis.NewClient(&redis.Options{
+	redisClient := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%v:%v", cfg.Redis.Host, cfg.Redis.Port),
 		Password: cfg.Redis.Password,
 		DB:       cfg.Redis.DB,
 	})
 
-	err = client.Ping(context.Background()).Err()
+	err = redisClient.Ping(context.Background()).Err()
 
 	if err != nil {
 		return err
@@ -53,17 +53,17 @@ func cacheEvents(_ *cobra.Command, _ []string) error {
 		fmt.Println("Error in fetching events ", err)
 	}
 
-	client.Del(ctx, "eventsMap")
+	redisClient.Del(ctx, "eventsMap")
 
 	for _, event := range events {
-		err := client.HSet(ctx, "eventsMap", event.ID, event.TicketsAvailable).Err()
+		err := redisClient.HSet(ctx, "eventsMap", event.ID, event.TicketsAvailable).Err()
 		if err != nil {
 			panic(err)
 		}
 	}
 
 	/*
-		val, err := client.HMGet(ctx, "eventsMap", "66a23cd5725cdab3e4c68049").Result()
+		val, err := redisClient.HMGet(ctx, "eventsMap", "66a23cd5725cdab3e4c68049").Result()
 		if err != nil {
 			panic(err)
 		}

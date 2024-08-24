@@ -1,6 +1,7 @@
 package config
 
 import (
+	"booking_server/internal/booking"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -15,6 +16,11 @@ func ConfigureRoutes() *chi.Mux {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello booking server"))
+	})
+
+	bookingHandler := booking.NewHandler()
+	r.Route("/v1", func(r chi.Router) {
+		r.Post("/create_booking", bookingHandler.CreateBooking)
 	})
 
 	return r

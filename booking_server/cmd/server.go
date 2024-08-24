@@ -41,12 +41,8 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 
 	ctx := context.Background()
 
-	// Connect to redis server
-	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%v:%v", cfg.Redis.Host, cfg.Redis.Port),
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
-	})
+	config.ConnectRedis(cfg.Redis.Host, cfg.Redis.Port)
+	client := config.GetRedisClient()
 
 	testRedis(ctx, client)
 
