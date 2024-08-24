@@ -2,13 +2,15 @@ package config
 
 import (
 	"booking_server/internal/booking"
+	"booking_server/internal/repository"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"gorm.io/gorm"
 )
 
-func ConfigureRoutes() *chi.Mux {
+func ConfigureRoutes(dbInstance *gorm.DB) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
@@ -18,7 +20,10 @@ func ConfigureRoutes() *chi.Mux {
 		w.Write([]byte("hello booking server"))
 	})
 
-	bookingHandler := booking.NewHandler()
+	repo := repository.NewRepository(dbInstance)
+	bookingService := booking.NewService(repo)
+	bookingHandler := booking.NewHandler(bookingService)
+
 	r.Route("/v1", func(r chi.Router) {
 		r.Post("/create_booking", bookingHandler.CreateBooking)
 	})

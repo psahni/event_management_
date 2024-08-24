@@ -15,10 +15,11 @@ type BookingRequest struct {
 }
 
 type Handler struct {
+	bookingService Service
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(bookingService Service) *Handler {
+	return &Handler{bookingService}
 }
 
 func (handler *Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {

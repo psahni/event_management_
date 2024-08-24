@@ -37,7 +37,7 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 		panic("can't connect to DB")
 	}
 
-	routes := config.ConfigureRoutes()
+	routes := config.ConfigureRoutes(gormDB)
 
 	ctx := context.Background()
 
