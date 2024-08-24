@@ -5,8 +5,10 @@ import Login from "@pages/Login"
 import Logout from "@pages/Logout"
 import  Signup from "@pages/Signup"
 import Home from "@pages/Home"
+import { Events } from "@pages/events/index"
+import { EventShow } from "@pages/events/show"
 
-let Routes = () => {
+export let Routes = () => {
   const { loggedIn } = useAuth()
   console.log("Routes: loggedIn", loggedIn)
 
@@ -48,7 +50,11 @@ let Routes = () => {
         },
         {
           path: "/events",
-          element: <div>Listing Events</div>
+          element: <Events/>
+        },
+        {
+          path: "/events/:id",
+          element: <EventShow/>
         },
         {
           path: "/logout",
@@ -69,4 +75,3 @@ let Routes = () => {
   return <RouterProvider router={router} />
 }
 
-export default Routes;

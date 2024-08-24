@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../provider/authProvider';
+// import { useAuth } from '../provider/authProvider';
 import { useEffect } from "react";
 
 const Logout = () => {
-  const { updateToken } = useAuth();
+  // const { updateToken } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    updateToken("");
+    // updateToken("");
     navigate("/", { replace: true })
   }
 
