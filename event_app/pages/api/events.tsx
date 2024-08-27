@@ -10,7 +10,13 @@ interface EventParams {
 }
 
 async function FindAll(req: NextApiRequest, res: NextApiResponse) {
-  const events = await Event.find({ publish: true, startDateTime: { $gte: new Date() } }, { __v: 0, createdAt: 0, updatedAt: 0 })
+  let today: string | Date  = new Date()
+  today = [today.getFullYear(), today.getMonth()+1, today.getDay()+1].join("-")
+
+  const events = await Event.find(
+    { publish: true, startDateTime: { $gte: today } }, 
+    { __v: 0, createdAt: 0, updatedAt: 0 }
+  )
 
   res.status(200).json(events);
 }

@@ -21,17 +21,18 @@ export default function Create(props?: { event?: Event }) {
       .required('Start Date Time is required')
       .typeError("Invalid Date")
       .test("should be greater", "Start Date Time must be after 3 days", (_: any, ctx: any) => {
-        const ev = ctx.parent
-        let startdate = new Date()
-        let selectedDate = ev.startDateTime
+        // const ev = ctx.parent
+        // let startdate = new Date()
+        // let selectedDate = ev.startDateTime
 
-        if (ev._id) {
-          startdate = new Date(ev.createdAt)
-        }
+        // if (ev._id) {
+        //   startdate = new Date(ev.createdAt)
+        // }
 
-        const { diffDays } = DateDiff(startdate, selectedDate)
+        // const { diffDays } = DateDiff(startdate, selectedDate)
 
-        return diffDays >= 3
+        // return diffDays >= 3
+        return true
       }),
     endDateTime: Yup.date()
       .required('End Date Time is required')
@@ -45,7 +46,7 @@ export default function Create(props?: { event?: Event }) {
         if (selectedDate < startdatetime) return ctx.createError({ message: "end date time must be greater than start date time" })
 
         const { diffHours } = DateDiff(startdatetime, selectedDate)
-        return diffHours >= 2
+        return diffHours >= 1
       }),
   });
 
