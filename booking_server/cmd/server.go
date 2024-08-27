@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"booking_server/db"
+	"booking_server/internal/app"
 	"booking_server/internal/config"
 
 	"github.com/redis/go-redis/v9"
@@ -37,7 +38,7 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 		panic("can't connect to DB")
 	}
 
-	routes := config.ConfigureRoutes(gormDB)
+	routes := app.ConfigureRoutes(gormDB)
 
 	ctx := context.Background()
 

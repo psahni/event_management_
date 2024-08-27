@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"booking_server/internal/booking"

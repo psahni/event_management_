@@ -8,12 +8,6 @@ import (
 	"github.com/go-chi/render"
 )
 
-type BookingRequest struct {
-	UserId       string `json:"user_id"`
-	EventId      string `json:"event_id"`
-	TicketsCount int    `json:"tickets_count"`
-}
-
 type Handler struct {
 	bookingService Service
 }
@@ -31,8 +25,14 @@ func (handler *Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 		fmt.Errorf("Error: %v", err)
 	}
 
-	fmt.Println(bookingReq)
+	bookingRes, err := handler.bookingService.CreateBooking(r.Context(), bookingReq)
+
+	if err != nil {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, err)
+		return
+	}
 
 	render.Status(r, http.StatusOK)
-	render.JSON(w, r, "")
+	render.JSON(w, r, bookingRes)
 }
