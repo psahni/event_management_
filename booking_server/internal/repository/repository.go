@@ -1,14 +1,20 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	"context"
+
+	"gorm.io/gorm"
+)
 
 type Repository interface {
+	CreateBooking(context.Context, string, string, int) (string, error)
+	GetPendingBookingsByEvent(context.Context, string) int
 }
 
 type RepositoryImpl struct {
-	dbInstance *gorm.DB
+	gormDB *gorm.DB
 }
 
-func NewRepository(dbInstance *gorm.DB) *RepositoryImpl {
-	return &RepositoryImpl{dbInstance}
+func NewRepository(gormDB *gorm.DB) *RepositoryImpl {
+	return &RepositoryImpl{gormDB}
 }

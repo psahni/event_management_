@@ -4,7 +4,6 @@ import (
 	"booking_server/internal/config"
 	"booking_server/internal/repository"
 	"context"
-	"fmt"
 	"log/slog"
 	"strconv"
 )
@@ -28,12 +27,15 @@ type ServiceImpl struct {
 	repo repository.Repository
 }
 
+//--------------------------------------------------------------------------------------------------
+
 func NewService(repo repository.Repository) *ServiceImpl {
 	return &ServiceImpl{repo}
 }
 
+//--------------------------------------------------------------------------------------------------
+
 func (svc *ServiceImpl) CreateBooking(ctx context.Context, bookingRequest BookingRequest) (*BookingResponse, error) {
-	fmt.Println(bookingRequest)
 	ticketsLeft, err := svc.getTicketsInfo(ctx, bookingRequest.EventId)
 
 	if err != nil {
@@ -41,13 +43,27 @@ func (svc *ServiceImpl) CreateBooking(ctx context.Context, bookingRequest Bookin
 		return nil, err
 	}
 
-	fmt.Println("ticketsLeft = ", ticketsLeft)
+	var bookingID string
+	if bookingRequest.TicketsCount <= ticketsLeft {
+		bookingID, err = svc.repo.CreateBooking(ctx, bookingRequest.EventId, bookingRequest.UserId, bookingRequest.TicketsCount)
+		if err != nil {
+			slog.ErrorContext(ctx, "Booking can't be created.")
+			return nil, err
+		}
+
+		return &BookingResponse{
+			BookingId: bookingID,
+			Message:   "Successfully created booking. Please check your email for tickets.",
+		}, nil
+	}
 
 	return &BookingResponse{
-		BookingId: "ekjubj456af",
-		Message:   "Successfully Booked",
+		BookingId: "",
+		Message:   "Booking can't be created. All tickets are sold.",
 	}, nil
 }
+
+//--------------------------------------------------------------------------------------------------
 
 func (svc *ServiceImpl) getTicketsInfo(ctx context.Context, eventId string) (int, error) {
 	client := config.GetRedisClient()
@@ -59,5 +75,9 @@ func (svc *ServiceImpl) getTicketsInfo(ctx context.Context, eventId string) (int
 
 	v, _ := strconv.Atoi(val)
 
-	return v, nil
+	pendingBookingsCount := svc.repo.GetPendingBookingsByEvent(ctx, eventId)
+
+	return (v - pendingBookingsCount), nil
 }
+
+//--------------------------------------------------------------------------------------------------

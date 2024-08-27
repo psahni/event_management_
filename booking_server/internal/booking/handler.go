@@ -2,7 +2,6 @@ package booking
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/render"
@@ -22,7 +21,9 @@ func (handler *Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 	var bookingReq BookingRequest
 	err := req.Decode(&bookingReq)
 	if err != nil {
-		fmt.Errorf("Error: %v", err)
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, err)
+		return
 	}
 
 	bookingRes, err := handler.bookingService.CreateBooking(r.Context(), bookingReq)
