@@ -51,10 +51,13 @@ async function Login(user: LoginForm) {
     }
 }
 
-let authService = {};
-export default authService = {
+let authService = {
   Login,
   SignUp,
   loggedIn
+};
+
+export { 
+  authService
 }
 

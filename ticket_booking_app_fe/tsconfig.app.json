@@ -6,7 +6,8 @@
       "@pages/*": ["pages/*"],
       "@services/*": ["services/*"],
       "@components/*": ["components/*"],
-      "@types/*": ["types/*"]
+      "@types/*": ["types/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "useDefineForClassFields": true,

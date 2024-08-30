@@ -11,7 +11,8 @@ export default defineConfig({
       src: resolve("src/"),
       pages: resolve("src/pages"),
       services: resolve("src/services"),
-      components: resolve("src/components")
+      components: resolve("src/components"),
+      hooks: resolve("src/hooks")
     }
   }
 })

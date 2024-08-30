@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "services/auth.service";
+import { authService } from "services/auth.service";
 
 type Props = {
   children: string | JSX.Element | JSX.Element[]
