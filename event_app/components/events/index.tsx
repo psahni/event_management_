@@ -12,7 +12,7 @@ export default function Events() {
   }, [])
 
   async function fetchEvents() {
-    const events = await fetch('/api/events');
+    const events = await fetch('/api/admin/events');
     const data = await events.json();
   
     setEvents(data)

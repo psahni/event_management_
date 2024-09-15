@@ -13,8 +13,11 @@ async function fetchEventById(id: string) {
   return event.data
 }
 
-let eventsService = {}
-export default eventsService = {
+const eventsService = {
   fetchEvents,
   fetchEventById
+}
+
+export {
+  eventsService
 }

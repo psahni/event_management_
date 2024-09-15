@@ -45,4 +45,6 @@ export const useAuth = () => {
 }
 
 
-export default AuthProvider;
+export  { AuthProvider };
+
+// Better idea to handle refresh, whenver user refresh, bring the login details from server

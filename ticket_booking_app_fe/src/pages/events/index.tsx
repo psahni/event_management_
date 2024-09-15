@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import eventsService from "@services/events.service"
+import { eventsService } from "@services/events.service"
 import { Event } from "@types/event"
 
 const Events = () => {
