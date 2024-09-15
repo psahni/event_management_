@@ -4,8 +4,11 @@ import (
 	"booking_server/internal/config"
 	"booking_server/internal/repository"
 	"context"
+	"errors"
 	"log/slog"
 	"strconv"
+
+	"github.com/google/uuid"
 )
 
 type BookingRequest struct {
@@ -14,13 +17,20 @@ type BookingRequest struct {
 	TicketsCount int    `json:"tickets"`
 }
 
+type ConfirmBookingRequest struct {
+	UserId    string `json:"user_id"`
+	BookingId string `json:"booking_id"`
+}
+
 type BookingResponse struct {
 	BookingId string `json:"booking_id"`
+	Status    string `json:"status"`
 	Message   string `json:"message"`
 }
 
 type Service interface {
 	CreateBooking(context.Context, BookingRequest) (*BookingResponse, error)
+	ConfirmBooking(context.Context, ConfirmBookingRequest) (*BookingResponse, error)
 }
 
 type ServiceImpl struct {
@@ -44,6 +54,7 @@ func (svc *ServiceImpl) CreateBooking(ctx context.Context, bookingRequest Bookin
 	}
 
 	var bookingID string
+
 	if bookingRequest.TicketsCount <= ticketsLeft {
 		bookingID, err = svc.repo.CreateBooking(ctx, bookingRequest.EventId, bookingRequest.UserId, bookingRequest.TicketsCount)
 		if err != nil {
@@ -60,6 +71,28 @@ func (svc *ServiceImpl) CreateBooking(ctx context.Context, bookingRequest Bookin
 	return &BookingResponse{
 		BookingId: "",
 		Message:   "Booking can't be created. All tickets are sold.",
+	}, nil
+}
+
+//--------------------------------------------------------------------------------------------------
+
+func (svc *ServiceImpl) ConfirmBooking(ctx context.Context, confirmBookingReq ConfirmBookingRequest) (*BookingResponse, error) {
+	bookingID := confirmBookingReq.BookingId
+	userID := confirmBookingReq.UserId
+
+	bookingIDuuID := uuid.MustParse(bookingID)
+
+	booking, err := svc.repo.ConfirmBooking(ctx, bookingIDuuID, userID)
+
+	if err != nil {
+		slog.ErrorContext(ctx, err.Error())
+		return nil, errors.New("error in confirming your booking")
+	}
+
+	return &BookingResponse{
+		BookingId: booking.ID.String(),
+		Status:    booking.Status,
+		Message:   "Your Booking has been confirmed successfully",
 	}, nil
 }
 

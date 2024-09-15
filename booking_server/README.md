@@ -13,7 +13,6 @@
   $  docker build -t  booking_server_app:latest  -f Dockerfile.dev .
 `
 
-
 `
   $ docker run -p 3333:3333 booking_server_app:latest
 `
@@ -44,7 +43,10 @@
 * Don't use docker container for starting app server on windows, it does not integrate well with air.
 Start the air directly - `air -- http_server`
 
-
+### Mongo DB
+```
+  sudo systemctl start mongod
+```
 
 ### Notes
 * In order to generate the uuid, you need to enable the extention
@@ -58,6 +60,29 @@ Start the air directly - `air -- http_server`
 
 ### Redis commander
 
+`sudo /etc/init.d/redis-server start`
+
 Install redis commander `https://github.com/joeferner/redis-commander` to view redis data in GUI
 
+`redis-commander` 
 
+This command will start server on http://127.0.0.1:8081/
+
+------------------------------------------------------------------------------------
+
+### How to start the server
+
+1. Start Redis
+2. Start postgres
+3. Start MongoDB 
+4. Start GO server (I am using windows)
+
+Extra
+* You can use mongo Atlas
+* Redis commander
+* Postgres Client - DBeaver
+
+
+### Load Events From Event App
+
+`make cache_events`

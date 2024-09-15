@@ -26,6 +26,7 @@ func ConfigureRoutes(dbInstance *gorm.DB) *chi.Mux {
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Post("/create_booking", bookingHandler.CreateBooking)
+		r.Post("/confirm_booking", bookingHandler.ConfirmBooking)
 	})
 
 	return r
