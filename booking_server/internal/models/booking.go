@@ -30,4 +30,5 @@ type Booking struct {
 	Status       string    `gorm:"type:varchar(20);not null"`
 	CreatedAt    time.Time `gorm:"not null;default:now()"`
 	UpdatedAt    time.Time `gorm:"not null;default:now()"`
+	ExpireAt     time.Time `gorm:"not null;"`
 }

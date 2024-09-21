@@ -22,6 +22,7 @@ func Run(gormDB *gorm.DB, direction Direction) error {
 	m := gormigrate.New(gormDB, opt, []*gormigrate.Migration{
 		initbookingschema20240725123737,
 		initpaymentschema20240725125350,
+		addexpireattobookings20240921175559,
 	})
 
 	if direction == DOWN {
