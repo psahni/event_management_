@@ -3,6 +3,7 @@ package repository
 import (
 	"booking_server/internal/models"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -26,8 +27,6 @@ import (
 // SET    order:event_id:user_id "1"
 // EXPIRE order:event_id:user_id 3600
 
-const BOOKING_EXPIRE_AFTER = 15 // Minutes
-
 func (repo *RepositoryImpl) CreateBooking(ctx context.Context, eventID string, userID string, ticketsCount int) (string, error) {
 	fmt.Println("CreateBooking()")
 
@@ -36,7 +35,7 @@ func (repo *RepositoryImpl) CreateBooking(ctx context.Context, eventID string, u
 		UserID:       userID,
 		Status:       string(models.BookingStatus.Pending),
 		TicketsCount: int64(ticketsCount),
-		ExpireAt:     time.Now().Add(time.Minute * BOOKING_EXPIRE_AFTER),
+		ExpireAt:     time.Now().Add(time.Minute * models.BOOKING_EXPIRE_AFTER),
 	}
 	err := repo.gormDB.Create(bookingObj).Error
 
@@ -59,6 +58,10 @@ func (repo *RepositoryImpl) ConfirmBooking(ctx context.Context, bookingID uuid.U
 		return nil, err
 	}
 
+	if booking.IsExpired() {
+		return nil, errors.New("sorry your booking has been expired")
+	}
+
 	booking.Status = string(models.BookingStatus.Confirmed)
 
 	repo.gormDB.Save(&booking)
@@ -70,9 +73,29 @@ func (repo *RepositoryImpl) ConfirmBooking(ctx context.Context, bookingID uuid.U
 
 func (repo *RepositoryImpl) GetPendingBookingsByEvent(ctx context.Context, eventID string) int {
 	bookings := []models.Booking{}
-	result := repo.gormDB.Where("status = ?", string(models.BookingStatus.Pending)).Find(&bookings)
+	now := time.Now()
+	t15MinAgo := now.Add(time.Duration(-15) * time.Minute)
+
+	result := repo.gormDB.
+		Where("status = ? AND expire_at >= ?", string(models.BookingStatus.Pending), t15MinAgo).
+		Find(&bookings)
 
 	return int(result.RowsAffected)
 }
 
 //--------------------------------------------------------------------------------------------------
+
+func (repo *RepositoryImpl) CancelBooking(ctx context.Context, bookingID string) error {
+	booking := models.Booking{}
+
+	err := repo.gormDB.Where("id = ? AND user_id = ?", bookingID).Find(&booking).Error
+	if err != nil {
+		return err
+	}
+
+	booking.Status = string(models.BookingStatus.Cancelled)
+
+	repo.gormDB.Save(&booking)
+
+	return nil
+}

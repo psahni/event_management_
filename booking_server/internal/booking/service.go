@@ -86,7 +86,7 @@ func (svc *ServiceImpl) ConfirmBooking(ctx context.Context, confirmBookingReq Co
 
 	if err != nil {
 		slog.ErrorContext(ctx, err.Error())
-		return nil, errors.New("error in confirming your booking")
+		return nil, errors.New(err.Error())
 	}
 
 	return &BookingResponse{
@@ -94,6 +94,12 @@ func (svc *ServiceImpl) ConfirmBooking(ctx context.Context, confirmBookingReq Co
 		Status:    booking.Status,
 		Message:   "Your Booking has been confirmed successfully",
 	}, nil
+}
+
+//--------------------------------------------------------------------------------------------------
+
+func (svc *ServiceImpl) CancelBooking(ctx context.Context, bookingID string) {
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -110,6 +116,7 @@ func (svc *ServiceImpl) getTicketsInfo(ctx context.Context, eventId string) (int
 
 	pendingBookingsCount := svc.repo.GetPendingBookingsByEvent(ctx, eventId)
 
+	// Inventory is available in redis - order in pending
 	return (v - pendingBookingsCount), nil
 }
 

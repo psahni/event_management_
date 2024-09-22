@@ -12,6 +12,7 @@ type Repository interface {
 	CreateBooking(context.Context, string, string, int) (string, error)
 	ConfirmBooking(context.Context, uuid.UUID, string) (*models.Booking, error)
 	GetPendingBookingsByEvent(context.Context, string) int
+	CancelBooking(context.Context, string) error
 }
 
 type RepositoryImpl struct {

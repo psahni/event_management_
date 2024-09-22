@@ -9,17 +9,21 @@ import (
 
 type status string
 
+const BOOKING_EXPIRE_AFTER = 15 // Minutes
+
 const (
 	Pending   status = "pending"
 	Confirmed status = "confirmed"
+	Cancelled status = "cancelled"
 )
 
 type bookingStatus struct {
 	Pending   status
 	Confirmed status
+	Cancelled status
 }
 
-var BookingStatus = bookingStatus{Pending, Confirmed}
+var BookingStatus = bookingStatus{Pending, Confirmed, Cancelled}
 
 type Booking struct {
 	gorm.Model
@@ -31,4 +35,8 @@ type Booking struct {
 	CreatedAt    time.Time `gorm:"not null;default:now()"`
 	UpdatedAt    time.Time `gorm:"not null;default:now()"`
 	ExpireAt     time.Time `gorm:"not null;"`
+}
+
+func (b *Booking) IsExpired() bool {
+	return time.Since(b.ExpireAt) > time.Minute*15
 }

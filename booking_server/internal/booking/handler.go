@@ -1,6 +1,7 @@
 package booking
 
 import (
+	"booking_server/internal/lib/response"
 	"encoding/json"
 	"net/http"
 
@@ -55,7 +56,8 @@ func (handler *Handler) ConfirmBooking(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		render.Status(r, http.StatusBadRequest)
-		render.JSON(w, r, err)
+		e := response.NewDefaultError(http.StatusBadRequest, err.Error())
+		render.JSON(w, r, e)
 		return
 	}
 
