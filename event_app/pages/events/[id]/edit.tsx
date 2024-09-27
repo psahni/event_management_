@@ -10,10 +10,10 @@ export default function EditPage() {
   const [event, setEvent] = useState({name: ''})
 
   async function findEvent() {
-    const { id } = router.query
+    const { id } = router.query;
     if (!id) return;
 
-    const event = await eventService.findEvent(id)
+    const event = await eventService.findEvent(id);
     setEvent(event)
   }
 

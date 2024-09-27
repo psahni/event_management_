@@ -1,14 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const protectedAPIRoutes = ["/api/bookings"];
-const adminAPIRoutes = ["/api/events"];
+const adminAPIRoutes = ["/api/admin/events"];
 
 function apiHandler(handler: any) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const method = req.method?.toLowerCase();
+    console.log("method ", method);
+
   
     const isProtectedRoute = protectedAPIRoutes.find(route => req.url?.match(`^${route}`));
 
+    // CLIENT REQ - Auth by JSON Token
     if (isProtectedRoute && !IsTokenPresent(req.headers.authorization)) {
       return res.status(401).end(JSON.stringify({ success: false, message: 'authentication failed' }))
     } else {
@@ -21,6 +24,8 @@ function apiHandler(handler: any) {
    
     
     if (!method || (method && !handler[method])) return res.status(405).end(res);
+
+    console.log(handler[method]);
 
     try {
       await handler[method](req, res);
