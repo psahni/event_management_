@@ -1,4 +1,4 @@
-// THIS SERVICE CONTAINS API CALLS TO BACKEND
+// THIS SERVICE CONTAINS API CALLS TO BACKEND (FE Services. From component to service to api)
 import { Event } from "types/event"
 
 async function createEvent(event: Event) {
@@ -55,6 +55,7 @@ async function findEvent(id: string) {
 
   return event
 }
+
 
 const eventService = {
   createEvent,
