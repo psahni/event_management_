@@ -1,31 +1,39 @@
 version: '3'
 services:
-  web:
-    container_name: booking_server
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
-    ports:
-      - "3333:3333"
-    depends_on:
-      - postgres
-    volumes:
-      - ./:/booking_server
+  # web:
+  #   container_name: booking_server
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile.dev
+  #   ports:
+  #     - '3333:3333'
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./:/booking_server
   postgres:
     image: postgres
     restart: always
     container_name: booking_server_postgres
     ports:
-      - "5433:5432"
+      - '5433:5432'
     environment:
       POSTGRES_DB: booking_server_db
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secret
     volumes:
       - db:/var/lib/postgresql/pg_data
+  redis:
+    image: redis:7.4.1
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
 volumes:
+  redis_data:
   cache:
     driver: local
   db:
     driver: local
-

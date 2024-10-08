@@ -27,6 +27,9 @@ import (
 // SET    order:event_id:user_id "1"
 // EXPIRE order:event_id:user_id 3600
 
+// So if event_id key exists in redis, then it means the order is still active, not expired
+// If not exists then it is expired, as it has already removed from redis
+
 func (repo *RepositoryImpl) CreateBooking(ctx context.Context, eventID string, userID string, ticketsCount int) (string, error) {
 	fmt.Println("CreateBooking()")
 
@@ -64,6 +67,8 @@ func (repo *RepositoryImpl) ConfirmBooking(ctx context.Context, bookingID uuid.U
 
 	booking.Status = string(models.BookingStatus.Confirmed)
 
+	// Update Inventory on Event app side
+	// Update Inventory in redis
 	repo.gormDB.Save(&booking)
 
 	return &booking, nil

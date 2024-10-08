@@ -27,3 +27,6 @@ run:
 
 air:
 	air http_server
+
+start:
+	docker compose up postgres && docker compose up redis

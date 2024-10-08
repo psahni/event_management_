@@ -51,8 +51,10 @@ func runHTTPServer(_ *cobra.Command, _ []string) error {
 	ch := make(chan error, 1)
 
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
-		Handler: routes,
+		Addr:         fmt.Sprintf(":%d", cfg.Server.Port),
+		Handler:      routes,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	go func() {
